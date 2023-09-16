@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TimeInfoApi</title>
+</head>
+<style>
+    body,html{
+        margin:0;
+    }
+    
+    #page-cont{
+        width: 1024px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    h1,h2{
+        text-align: center;
+        padding:0;
+        margin: 0;
+    }
+    
+    h1{
+        font-size: 3rem;
+    }
+    
+    p{
+        text-align: center;
+        font-size: 2rem;
+        margin:0;
+        padding: 0;
+        line-height: 2rem;
+    }
+    
+    #time-block-cont{
+        display: grid;
+        grid-template-columns: repeat(auto-fill,384px);
+        gap: 24px;
+        justify-content: center;
+    }
+    
+    .time-block{
+        border-radius: 6px;
+        height: 96px;
+        background-color: grey;
+        padding: 12px;
+        display: grid;
+        grid-template-rows: min-content min-content 1fr;
+        row-gap: 6px;
+        align-items: start;
+        color: white;
+        box-shadow: black 12px 12px 12px;
+    }
+    
+    .time-cont{
+        font-size: 2rem;
+    }
+    
+    .time-descr{
+        font-size: 1rem;
+        line-height: 1rem;
+        
+    }
+</style>
+<body>
+<div id="page-cont">
+    <h1>TimeInfoApi</h1>
+    <br>
+    <div id="time-block-cont">
+        <div class="time-block">
+            <h2>Current clock</h2>
+            <p class="time-cont" id="time-cont"></p>
+            <p class="time-descr">This is the clock according to GMT +2 at summer and GMT +1 at winter</p>
+        </div>
+        <div class="time-block" style="background-color: green">
+            <h2>COOP 365 Discount</h2>
+            <p class="time-cont" id="365-Kastruplundgade"></p>
+            <p class="time-descr">Kastruplundgade 21, 2770 Kastrup</p>
+        </div>
+        <div class="time-block" style="background-color: green">
+            <h2>COOP 365 Discount</h2>
+            <p class="time-cont" id="365-Kastrupvej"></p>
+            <p class="time-descr">Kastrupvej xx, 2770 Kastrup</p>
+        </div>
+        <div class="time-block" style="background-color: blue">
+            <h2>Føtex</h2>
+            <p class="time-cont" id="foetex-Amagerbrogade"></p>
+            <p class="time-descr">Amagerbrogade 290, 2300S</p>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    const timeElement = document.getElementById("time-cont")
+    const el365I = document.getElementById("365-Kastruplundgade")
+    const el365II = document.getElementById("365-Kastrupvej")
+    const elFtxI = document.getElementById("foetex-Amagerbrogade")
+    const formatted = (date, ignoreUTC = true) => {
+        const hours = ignoreUTC ? date.getHours() : date.getUTCHours()
+        const formattedHours = hours < 10 ? `0${hours}` : hours
+        const minutes = date.getMinutes()
+        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes
+        const seconds = date.getSeconds()
+        const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds
+        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`
+    }
+    
+    const updateCurrentTime = () => {
+        timeElement.textContent = formatted(new Date())
+        setTimeout(updateCurrentTime,1000)
+    }
+    
+    const currentTimeObject = () => {
+        const currentDate = new Date()
+        return timeObject(currentDate.getHours(),
+            currentDate.getMinutes(),
+            currentDate.getSeconds())
+    }
+    
+    const timeObject = (hours,minutes = 0, seconds = 0) => {
+        return {
+            hours,
+            minutes,
+            seconds
+        }
+    }
+
+    const createDate = (timeObject) => {
+        const date = new Date()
+        date.setHours(timeObject.hours)
+        date.setMinutes(timeObject.minutes)
+        date.setSeconds(timeObject.seconds)
+        return date
+    }
+    
+    const isBefore = (t1,t2) => {
+        const d1 = createDate(t1)
+        const d2 = createDate(t2)
+        return d1 < d2
+    }
+    
+    const diff = (t1,t2) => {
+        const d1 = createDate(t1).getTime()
+        const d2 = createDate(t2).getTime()
+        const diff = d1 - d2
+        return new Date(diff)
+    }
+    
+    const update365Info = (el,opens,closes) => {
+        const currentTime = currentTimeObject()
+        let msg
+        if(isBefore(currentTime,closes))
+            msg = "Closes in: " + formatted(diff(closes,currentTime),false)
+        else
+            msg = "Opens in: " + formatted(diff(opens,currentTime),false)
+        el.textContent = msg
+        setTimeout(() => update365Info(el,opens,closes),1000)
+    }
+    updateCurrentTime()
+    update365Info(el365I,timeObject(8),timeObject(22))
+    update365Info(el365II,timeObject(7),timeObject(21))
+    update365Info(elFtxI,timeObject(7),timeObject(21))
+</script>
+</html>

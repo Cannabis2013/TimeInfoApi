@@ -1,0 +1,14 @@
+{
+  "name": "timeinfoapi",
+  "version": "1.0.0",
+  "description": "A shitty project",
+  "main": "app.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Martin Hansen",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
