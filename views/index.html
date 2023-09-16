@@ -150,7 +150,9 @@
     const update365Info = (el,opens,closes) => {
         const currentTime = currentTimeObject()
         let msg
-        if(isBefore(currentTime,closes))
+        if (isBefore(currentTime,closes) && isBefore(currentTime,opens))
+            msg = "Opens in: " + formatted(diff(opens,currentTime),false)
+        else if(isBefore(currentTime,closes))
             msg = "Closes in: " + formatted(diff(closes,currentTime),false)
         else
             msg = "Opens in: " + formatted(diff(opens,currentTime),false)
