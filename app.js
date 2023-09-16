@@ -6,7 +6,7 @@ app.listen(port, () => {
     console.log(`http://localhost:${port}/`)
 })
 
-const htmlOptions = {root: '.'}
+const htmlOptions = {}
 
 app.get('/',(req,res) => {    
     return res.sendFile("./views/index.html",htmlOptions)
