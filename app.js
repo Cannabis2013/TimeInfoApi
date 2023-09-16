@@ -6,10 +6,9 @@ app.listen(port, () => {
     console.log(`http://localhost:${port}/`)
 })
 
-const htmlOptions = {}
 
-app.get('/',(req,res) => {    
-    return res.sendFile("./views/index.html",htmlOptions)
+app.get('/',(req,res) => {
+    return res.sendFile(__dirname + "/views/index.html")
 })
 
 module.exports = app
